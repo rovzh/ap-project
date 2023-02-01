@@ -112,7 +112,7 @@ user login(){
            cout<<"Login successful"<< endl;
            return a;
         }else{
-            
+
             cout<<"Incorrect password"<< endl;
             File.close();
             return login();
@@ -233,6 +233,54 @@ void search(){
         
     }
 }
+
+reserve(){
+
+    string myText;
+    ifstream MyFile("books.txt");
+    while (getline (MyFile, myText)) {
+        stringstream ss(myText);  
+        string word;
+        string data[11];
+        int i=0;
+        while (ss >> word) { 
+            data[i]=word;
+            i++;
+        }
+
+    if(data[9]=="free"){
+        data[9]="occupied";
+    }else{
+        cout<<"this book is not available right now";
+    }
+
+    MyFile.close();
+    }
+}
+returnbook(){
+
+    string myText;
+    ifstream MyFile("books.txt");
+    while (getline (MyFile, myText)) {
+        stringstream ss(myText);  
+        string word;
+        string data[11];
+        int i=0;
+        while (ss >> word) { 
+            data[i]=word;
+            i++;
+        }
+
+    if(data[9]=="occupied"){
+        data[9]="free";
+    }else{
+        cout<<"this book is not available right now";
+    }
+
+    MyFile.close();
+    }
+}
+
 
 int main()
 {
