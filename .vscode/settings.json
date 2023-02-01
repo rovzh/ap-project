@@ -59,6 +59,7 @@
     "utility": "cpp",
     "vector": "cpp",
     "iostream": "cpp",
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "fstream": "cpp"
   }
 }

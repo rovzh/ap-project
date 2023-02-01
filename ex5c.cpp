@@ -286,25 +286,6 @@ void search(user a){
 }
 
 void reserve(book b,user a){
-    if(b.status == "free"){
-        string bookString = b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+b.status + " NULL"; 
-        string newText = "";
-        string line;
-        ifstream file("books.txt");
-        while (getline(file,line)){
-            if(line == bookString){
-                newText += b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+ "occupied"+ " NULL";
-                newText +=  "\n";
-            }
-            else{
-                newText +=  line + "\n";
-            }
-        }
-        file.close();
-        ofstream nfile("books.txt");
-        nfile << newText;
-        nfile.close();
-
         string temp = "a.txt";
         temp.replace(0,1,a.username);
 
@@ -313,21 +294,55 @@ void reserve(book b,user a){
         ifstream userFile(temp);
         getline(userFile,userData);
         getline(userFile,reservedData);
-        reservedData += " " + b.ISBN; 
-
-        ofstream newUserFile(temp);
-        newUserFile << userData << endl << reservedData;
-
-        userFile.close();
-        newUserFile.close();
-
-        system("CLS");
-        cout <<"reserved succsusfully"<< endl;
-
         
+        stringstream sssss(reservedData);  
+        string worddd;
+        string dataaa[11];
+        int t=0;
+        while (sssss >> worddd) { 
+
+            dataaa[t]=worddd;
+            t++;
+        }   
+        if(t<2){
+            if(b.status == "free"){
+                reservedData += " " + b.ISBN; 
+                ofstream newUserFile(temp);
+                newUserFile << userData << endl << reservedData;
+
+                userFile.close();
+                newUserFile.close();
+
+                string bookString = b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+ "free" + " NULL"; 
+                string newText = "";
+                string line;
+                ifstream file("books.txt");
+                while (getline(file,line)){
+                    if(line == bookString){
+                        newText += b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+ "occupied"+ " NULL";
+                        newText +=  "\n";
+                    }
+                    else{
+                        newText +=  line + "\n";
+                    }
+                }
+                file.close();
+                ofstream nfile("books.txt");
+                nfile << newText;
+                nfile.close();
+
+                    system("CLS");
+                    cout <<"reserved succsusfully"<< endl;
+                }
+            else{
+                system("CLS");
+                cout << "Book is not free!"<< endl;
+                homePage(a);
+
+            }
     }else{
         system("CLS");
-        cout << "Book is not free!"<< endl;
+        cout << "you cant reserved due to max"<< endl;
         homePage(a);
     }
 }
@@ -349,7 +364,7 @@ void returnBook(user a){
     string booksISBN[1000];
     stringstream s(reservedData);  
     string word;
-    string data[11];
+    string data[1000];
     int t=0;
     while (s >> word) { 
         booksISBN[t]=word;
