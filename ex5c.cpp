@@ -13,15 +13,12 @@ void homePage(user a);
 void reserve(book b,user a);
 
 class user{
-
-public:
-string username;
-string password;
-string firstname;
-string lastname;
-string birthdate;
-
-    
+    public:
+        string username;
+        string password;
+        string firstname;
+        string lastname;
+        string birthdate;
 };
 
 class book{
@@ -194,7 +191,7 @@ void search(user a){
     
 
        int counter = 0;
-       string result[50];
+       string result[1000];
        while (getline (MyFile, myText)) {
             stringstream ss(myText);  
             string word;
@@ -291,20 +288,21 @@ void search(user a){
 void reserve(book b,user a){
     if(b.status == "free"){
         string bookString = b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+b.status + " NULL"; 
-        // string newText = "";
+        string newText = "";
         string line;
         ifstream file("books.txt");
-        ofstream nfile("books1.txt");
         while (getline(file,line)){
             if(line == bookString){
-                nfile << b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+ "occupied"+ " NULL";
-                nfile << endl;
+                newText += b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+ "occupied"+ " NULL";
+                newText +=  "\n";
             }
             else{
-                nfile << line<<endl;
+                newText +=  line + "\n";
             }
         }
         file.close();
+        ofstream nfile("books.txt");
+        nfile << newText;
         nfile.close();
 
         string temp = "a.txt";
@@ -397,8 +395,7 @@ void returnBook(user a){
 
 
         ifstream file("books.txt");
-        ofstream nfile("books1.txt");
-
+        string nt = "";
         while (getline(file,line)){
             stringstream sss(line);
             string worddd;
@@ -409,15 +406,16 @@ void returnBook(user a){
                 j++;
             }
             if (dataaa[6] == booksISBN[bookIndex-1]){
-                nfile << dataaa[0]+" " + dataaa[1] +" "+ dataaa[2]+" " + dataaa[3] +" "+ dataaa[4]+" " + dataaa[5]+" " + dataaa[6]+" " + dataaa[7]+" " + dataaa[8] + " free " + dataaa[10] << endl;
+                nt +=  dataaa[0]+" " + dataaa[1] +" "+ dataaa[2]+" " + dataaa[3] +" "+ dataaa[4]+" " + dataaa[5]+" " + dataaa[6]+" " + dataaa[7]+" " + dataaa[8] + " free " + dataaa[10] + "\n";
                 
             }else{
-                nfile << line << endl;
-            }
-
-            
+                nt += line + "\n";
+            }   
         }
+
         file.close();
+        ofstream nfile("books.txt");
+        nfile << nt;
         nfile.close();
 
         system("CLS");
@@ -425,24 +423,137 @@ void returnBook(user a){
     }
 }
 
+void addBook(){
+    system("CLS");
+    book b;
+    cin >> b.title >> b.shelfnumber >> b.authors >> b.edition >> b.publisher >> b.publishedyear >> b.ISBN >> b.length >> b.subjects >> b.status;
+    string txt = "";
+    string line;
+    ifstream file("books.txt");
+    while(getline(file,line)){
+        txt += line + '\n';
+    }
+    txt += b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+ b.status + " NULL";
+    txt +=  "\n";
+    file.close();
+    ofstream nfile("books.txt");
+    nfile << txt;
+    nfile.close();
+}
 
-void homePage(user a){
-    cout << "welcome "<<a.firstname<< endl;
-    string optionn;
-    while (true){
-        cout <<"Options: search   returnBook"<<endl;
-        cin >> optionn;
-        if (optionn =="search"){
-            search(a);
+void editBook(){
+    system("CLS");
+    cout << "please insert book's ISBN that you want to edit" << endl;
+    string isbn;
+    cin >> isbn;
+
+    string txt = "";
+    string line;
+    ifstream booksfile("books.txt");
+    while(getline(booksfile,line)){
+        stringstream ss(line);
+        string wordd;
+        string dataa[11];
+        int j=0;
+        while (ss >> wordd) { 
+            dataa[j]=wordd;
+            j++;
         }
-        else if(optionn =="returnBook"){
-            returnBook(a);
+        if (dataa[6] == isbn){
+            string newInfo;
+            cout << line << endl;
+            cout << "please insert new data"<< endl;
+            book b;
+            cin >> b.title >> b.shelfnumber >> b.authors >> b.edition >> b.publisher >> b.publishedyear >> b.ISBN >> b.length >> b.subjects >> b.status;
+            txt += b.title + " "+ b.shelfnumber +" "+ b.authors+" "+ to_string(b.edition)+" "+b.publisher+" "+to_string(b.publishedyear)+" "+b.ISBN+" "+to_string(b.length)+" "+b.subjects+" "+ b.status + " NULL";
+
+            txt += "\n";
         }
         else{
-            system("CLS");
+            txt += line + "\n";
+        }
+    }
+    booksfile.close();
+    ofstream newfile("books.txt");
+    newfile << txt;
+    newfile.close();
+    system("CLS");
+    cout << "edits saved!" << endl;
+}
+
+void editUser(){
+    system("CLS");
+    cout << "please insert user's usernanme that you want to edit" << endl;
+    string username;
+    cin >> username;
+
+    string temp = "a.txt";
+    temp.replace(0,1,username);
+
+    ifstream file(temp);
+    string userData;
+    string userBooks;
+    getline(file,userData);
+    getline(file,userBooks);
+
+    user a;
+    cout << userData << endl;
+    cout << "please insert new data"<< endl;
+    cin >> a.username >> a.password >> a.firstname >> a.lastname >> a.birthdate;
+    file.close();
+    string txt = "";
+    txt += a.username +" "+ a.password +" "+ a.firstname +" "+ a.lastname +" "+ a.birthdate + "\n";
+    txt += userBooks;
+    ofstream f(temp);
+    f << txt;
+    f.close();
+}   
+
+void homePage(user a){
+    string optionn;
+    cout << "welcome "<<a.firstname<< endl;
+    if(a.username == "admin"){
+        while (true){
+            cout <<"Options: search   returnBook   addBook   editBook    editUser"<<endl;
+            cin >> optionn;
+            if (optionn =="search"){
+                search(a);
+            }
+            else if(optionn =="returnBook"){
+                returnBook(a);
+            }
+            else if(optionn =="addBook"){
+                addBook();
+            }
+            else if(optionn =="editBook"){
+                editBook();
+            }
+            else if(optionn =="editUser"){
+                editUser();
+            }
+            else{
+                system("CLS");
+            }
+        }
+    }
+    else{
+        while (true){
+            cout <<"Options: search   returnBook"<<endl;
+            cin >> optionn;
+            if (optionn =="search"){
+                search(a);
+            }
+            else if(optionn =="returnBook"){
+                returnBook(a);
+            }
+            else{
+                system("CLS");
+            }
         }
     }
 }
+
+
 
 int main()
 {  
